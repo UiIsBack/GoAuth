@@ -18,7 +18,7 @@ const bot_token = "" // bot token
 const sec = ""; // client secret
 const client_id = ""; // client id
 const redirect = "http://localhost:8080/callback" // redirection url (change to domain once hosting non locally)
-const role_id = "" // verified role id (automated soon)
+const role_id = "" // verified role id (automated soon) make sure this role is below the bots (without it cannot give the role)
 
 type DiscordToken struct {
 	AccessToken string `json:"access_token"`
@@ -28,6 +28,7 @@ type DiscordToken struct {
 
 
 func assignRole(userID string, roleID string, botToken string) error {
+	fmt.Printf("Userid: %s, Roleid: %s, bot: %s, guild: %s", userID, roleID, botToken, guild_id)
 	url := fmt.Sprintf("https://discord.com/api/guilds/%s/members/%s/roles/%s",guild_id, userID, roleID)
 	requestBody := []byte(`{}`)
 	req, err := http.NewRequest("PUT", url, bytes.NewBuffer(requestBody))
@@ -228,7 +229,7 @@ fmt.Println(mn)
 		if erp != nil {
 			fmt.Println(erp)
 		}
-		err2 := assignRole(mn.(string), role_id, bot_token)
+		err2 := assignRole(mn.(string), role_id, "MTA3NjU4MTAyMzg5NjMwNTcxNQ.GQOmYf.MGWzv24irSjRyAvZson2D3-8TNVxLs0tqpolRs")
 		if err1 != nil {
 			fmt.Println(err2)
 			return
