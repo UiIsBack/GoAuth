@@ -11,7 +11,7 @@ run ./setup.bat (on your pc)
 
 // this is going to be for replit as it's easier to explain but if you want help with your respected host dm me on discord: ui#3846
 
-create an empty Go repl and import the files from the goauth folder (make sure to also bring the "bot" folder)
+create an empty Go repl and then drag the contents from the goauth folder on your desktop (make sure to also bring the "bot" folder)
 
 then do the command in the shell of the repl `go get github.com/gin-gonic/gin`
 
