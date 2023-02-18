@@ -25,7 +25,7 @@ now go back to the goauth folder within your desktop and open "index.py" in the 
 
 go to [discord developer portal](https://discord.com/developers/applications) and create an application
 
-then head over to the "oauth" tab and copy the client id and client secret (you must reset it before copying) then add a redirect ("add redirect") and make the url the domain you copied of the repl but with "/callback" (for example "https://x.x.repl.co/callback" at the end
+then head over to the "oauth" tab and copy the client id and client secret (you must reset it before copying) then add a redirect ("add redirect") and make the url the domain you copied of the repl but with "/callback" (for example "https://x.x.repl.co/callback") at the end
 
 then head over to the bot tab and create bot and copy token (this is your bot token)
 
