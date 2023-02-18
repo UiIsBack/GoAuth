@@ -9,6 +9,9 @@ run ./setup.bat (on your pc)
 
 # configuration
 
+
+***READ:*** **Make sure that the verified role is below the bots role!!**
+
 // this is going to be for replit as it's easier to explain but if you want help with your respected host dm me on discord: ui#3846
 
 create an empty Go repl and then drag the contents from the goauth folder on your desktop (make sure to also bring the "bot" folder)
