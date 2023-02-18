@@ -5,7 +5,7 @@
 install [Python 3.9.5](https://www.python.org/downloads/release/python-395/)
 install [Go](https://go.dev/dl/)
 
-run ./setup.bat
+run ./setup.bat (on your pc)
 
 # configuration
 
