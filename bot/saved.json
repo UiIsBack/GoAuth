@@ -1,5 +1,13 @@
-{"array":[], "config":{
-  "bot_token":""
-  
-}
+{
+
+    "array": [
+        
+    ],
+    "config": {
+        "bot_token": "",
+        "guild": ""
+    },
+    "data": {},
+    "log": ""
+
 }
