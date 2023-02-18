@@ -229,7 +229,7 @@ fmt.Println(mn)
 		if erp != nil {
 			fmt.Println(erp)
 		}
-		err2 := assignRole(mn.(string), role_id, "MTA3NjU4MTAyMzg5NjMwNTcxNQ.GQOmYf.MGWzv24irSjRyAvZson2D3-8TNVxLs0tqpolRs")
+		err2 := assignRole(mn.(string), role_id, bot_token)
 		if err1 != nil {
 			fmt.Println(err2)
 			return
