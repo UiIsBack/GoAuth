@@ -18,6 +18,7 @@ then do the command in the shell of the repl `go get github.com/gin-gonic/gin`
 then run the main.go file (this will take a while)
 
 then copy the domain which shows above the part saying {"hello":"hello"}
+![Screenshot](https://i.imgur.com/VCos1fO.png)
 
 now go back to the goauth folder within your desktop and open "index.py" in the bot directory 
 
