@@ -29,13 +29,13 @@ with open("saved.json", "r+") as a:
     print("[...] Checking for tokens")
     aa = json.load(a)
     if aa['config']['bot_token'] == "":
-        token = input(f"{Colors.light_blue}[>] {Colors.blue}Bot token: ")
+        token = input(f"{Colors.light_blue}[>] {Colors.blue}Bot token: {Colors.light_blue}")
 
     else:
         token = aa['config']['bot_token']
-    role_id = input(f"{Colors.light_blue}[>] {Colors.blue}Enter Role id: ")
-    client_id = input(f"{Colors.light_blue}[>] {Colors.blue}Enter client id: ")
-    url_hosted = input(f"{Colors.light_blue}[>] {Colors.blue}Enter URL you're hosting with if testing locally type (http://localhost:8080): ")
+    role_id = input(f"{Colors.light_blue}[>] {Colors.blue}Enter Role id: {Colors.light_blue}")
+    client_id = input(f"{Colors.light_blue}[>] {Colors.blue}Enter client id: {Colors.light_blue}")
+    url_hosted = input(f"{Colors.light_blue}[>] {Colors.blue}Enter URL you're hosting with if testing locally type (http://localhost:8080): {Colors.light_blue}")
 bot = commands.Bot(command_prefix="-", help_command=None, intents=discord.Intents.all())
 
 @bot.command()
