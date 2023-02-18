@@ -32,6 +32,9 @@ then head over to the bot tab and create bot and copy token (this is your bot to
 then scroll down and enable all intents
 ![Screenshot](https://i.imgur.com/mYvzZcO.png)
 
+
+**Commands**
+for the commands you'll want to open the index.py again and run them via the bot, currently there's only "-pull <auth_token> <bot_token> <guild_id> <user_id>" and "-pull_all <guild_id>"
 and then fill in the bot token, role id for the verified role (make sure this can see channels and @everyone can't), client id, and then for the domain type the link you copied of the repl
   
 now enter the server and run the command -setup
