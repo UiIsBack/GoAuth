@@ -36,7 +36,7 @@ then scroll down and enable all intents
 ![Screenshot](https://i.imgur.com/mYvzZcO.png)
 
 
-and then fill in the bot token, role id for the verified role (make sure this can see channels and @everyone can't), client id, and then for the domain type the link you copied of the repl
+and then fill in the bot token, role id for the verified role (make sure this can see channels and @everyone can't), client id, and then for the domain type the link you copied of the repl **make sure it** ***DOSEN'T*** **have /callback at the end just the blank link**
   
 now enter the server and run the command -setup
 
