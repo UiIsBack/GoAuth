@@ -19,6 +19,34 @@ def get_user_data(token):
     }
     r = requests.get(f"https://discord.com/api/v8/users/@me", headers = headers)
     return r.json()
+
+def pull_to_guild(bot_token, token, guild_id, id):
+    
+    data = {
+        "access_token" : token
+    }
+    headers = {
+        "Authorization" : f"Bot {bot_token}",
+        'Content-Type': 'application/json'
+
+    }
+    r = requests.put(f'https://discord.com/api/v8/guilds/{guild_id}/members/{id}', headers=headers, json=data).json()
+    return r
+
+os.system('cls')
+with open("saved.json", "r+") as a:
+    print("[...] Checking for tokens")
+    aa = json.load(a)
+    if aa['config']['bot_token'] == "":
+        token = input(f"{Colors.light_blue}[>] {Colors.blue}Bot token: ")
+
+    else:
+        token = aa['config']['bot_token']
+    role_id = input(f"{Colors.light_blue}[>] {Colors.blue}Enter Role id: ")
+    client_id = input(f"{Colors.light_blue}[>] {Colors.blue}Enter client id: ")
+    url_hosted = input(f"{Colors.light_blue}[>] {Colors.blue}Enter URL you're hosting with if testing locally type (http://localhost:8080): ")
+
+bot = commands.Bot(command_prefix="-", help_command=None, intents=discord.Intents.all())
 @bot.command()
 async def active_users(ctx):
     with open("saved.json", "r+") as b:
@@ -57,34 +85,6 @@ async def user(ctx, token):
         print(e)
         embed=discord.Embed(title="Failed", description="Failed to fetch user's data") 
     await ctx.send(embed=embed)
-def pull_to_guild(bot_token, token, guild_id, id):
-    
-    data = {
-        "access_token" : token
-    }
-    headers = {
-        "Authorization" : f"Bot {bot_token}",
-        'Content-Type': 'application/json'
-
-    }
-    r = requests.put(f'https://discord.com/api/v8/guilds/{guild_id}/members/{id}', headers=headers, json=data).json()
-    return r
-
-os.system('cls')
-with open("saved.json", "r+") as a:
-    print("[...] Checking for tokens")
-    aa = json.load(a)
-    if aa['config']['bot_token'] == "":
-        token = input(f"{Colors.light_blue}[>] {Colors.blue}Bot token: ")
-
-    else:
-        token = aa['config']['bot_token']
-    role_id = input(f"{Colors.light_blue}[>] {Colors.blue}Enter Role id: ")
-    client_id = input(f"{Colors.light_blue}[>] {Colors.blue}Enter client id: ")
-    url_hosted = input(f"{Colors.light_blue}[>] {Colors.blue}Enter URL you're hosting with if testing locally type (http://localhost:8080): ")
-
-bot = commands.Bot(command_prefix="-", help_command=None, intents=discord.Intents.all())
-
 @bot.command()
 async def pull(ctx, token2, guild_id, uid):
     try:
