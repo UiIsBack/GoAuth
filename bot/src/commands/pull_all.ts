@@ -24,7 +24,7 @@ async function pull_to_guild(bot_token: string, token: string, guild_id: string,
 
 @Discord()
 export class Example {
-  @Slash({ description: "pull" })
+  @Slash({ description: "pull" ,     defaultMemberPermissions: "Administrator"})
   async pull_all(
     @SlashOption({
       description: "guild id",
