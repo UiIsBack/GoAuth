@@ -9,7 +9,7 @@ import { url } from "inspector";
 
 @Discord()
 export class Example {
-  @Slash({ description: "setup authentication" })
+  @Slash({ description: "setup authentication",     defaultMemberPermissions: "Administrator"})
   setup(
 
   
