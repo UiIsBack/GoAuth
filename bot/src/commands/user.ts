@@ -4,7 +4,7 @@ import { ApplicationCommandOptionType, } from "discord.js";
 import { Discord, MetadataStorage, Slash, SlashOption } from "discordx";
 @Discord()
 export class Example {
-  @Slash({ description: "user info" })
+  @Slash({ description: "user info",     defaultMemberPermissions: "Administrator"})
  async  user(
 
     @SlashOption({
