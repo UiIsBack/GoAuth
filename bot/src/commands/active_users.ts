@@ -24,7 +24,7 @@ async function pull_to_guild(bot_token: string, token: string, guild_id: string,
 
 @Discord()
 export class Example {
-  @Slash({ description: "see all active users" })
+  @Slash({ description: "see all active users" ,     defaultMemberPermissions: "Administrator"})
   async active_users(
 
     interaction: CommandInteraction,
