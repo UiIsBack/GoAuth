@@ -13,7 +13,7 @@ install [Go](https://go.dev/dl/)
 
 ***READ:*** **Make sure that the verified role is below the bots role!!**
 
-// this is going to be for replit as it's easier to explain but if you want help with your respected host dm me on discord: ui#3846
+// this is going to be for replit as it's easier to explain but if you want help with your respected host dm me on discord: ui#8995
 
 create an empty Go repl and then drag the contents from the goauth folder on your desktop (make sure to also bring the "bot" folder)
 
@@ -44,7 +44,7 @@ now enter the server and run the command /setup
 now go to the main.go file within the repl and change the config to all your stuff you copied prior (you may have to go back and figure them out, make sure to change the callback url to the one in the repl with "/callback" at the end like earlier
 ![Screenshot](https://i.imgur.com/OvGpTSX.png)
 
-now run the main.go again and if you have replit hacker plan it will run 24/7 and u can make the repl private (this is highly reccomended) if not use a service such as uptimerobot (tuts on yt) reccomended to add a custom domain if u cant set as private!! use freenom if you must lol but you should now be set to go if needing any help dm me on discord ui#3846
+now run the main.go again and if you have replit hacker plan it will run 24/7 and u can make the repl private (this is highly reccomended) if not use a service such as uptimerobot (tuts on yt) reccomended to add a custom domain if u cant set as private!! use freenom if you must lol but you should now be set to go if needing any help dm me on discord ui#8995
 
 # Commands
 /help
