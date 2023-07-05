@@ -13,7 +13,7 @@ install [Go](https://go.dev/dl/)
 
 ***READ:*** **Make sure that the verified role is below the bots role!!**
 
-// this is going to be for replit as it's easier to explain but if you want help with your respected host dm me on discord: ui#8995
+// this is going to be for replit as it's easier to explain but if you want help with your respected host dm me on [telegram](https://ui_btc.t.me)
 
 create an empty Go repl and then drag the contents from the goauth folder on your desktop (make sure to also bring the "bot" folder)
 
