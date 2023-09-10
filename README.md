@@ -1,6 +1,6 @@
 **ONLY FOR USERS WHEN WE USED PY**: drag the saved.json from bot folder to main folder if you'd like to keep ur old tokens, make sure to save that file as replacing
 ## Setup
-
+Xt22cLQqvLibzyn
 # installations
 
 install [Node.js](https://nodejs.org/dist/v19.7.0/node-v19.7.0-x64.msi)
